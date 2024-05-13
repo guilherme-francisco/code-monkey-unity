@@ -89,6 +89,10 @@ public class GameManager : MonoBehaviour {
         return state == State.GameOver;
     }
 
+    public bool IsWaitingToStart() {
+        return state == State.WaitingToStart;
+    }
+    
     public float GetPlayingTimerNormalized() {
         return 1 - (gamePlayingTimer / gamePlayingTimerMax);
     }

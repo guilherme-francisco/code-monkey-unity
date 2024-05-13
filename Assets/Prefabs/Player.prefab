@@ -369,3 +369,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f40fe9f545ba8024582b6fa9b60d5038, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  TransitionStateInfoList: []
+  m_Animator: {fileID: 917064270774897637}
