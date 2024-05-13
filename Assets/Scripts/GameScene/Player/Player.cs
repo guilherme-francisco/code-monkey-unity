@@ -100,11 +100,11 @@ public class Player : NetworkBehaviour, IKitchenObjectParent {
     
     private void HandleMovementServerAuth() {
         Vector2 inputVector = GameInput.Instance.GetMovementVectorNormalized();
-        HandleMovementSeverRpc(inputVector);    
+        HandleMovementServerRpc(inputVector);    
     }
 
     [ServerRpc(RequireOwnership = false)]
-    private void HandleMovementSeverRpc(Vector2 inputVector) {
+    private void HandleMovementServerRpc(Vector2 inputVector) {
         HandleMovement();
     }
 
