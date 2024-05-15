@@ -50,7 +50,7 @@ public class CuttingCounter : BaseCounter, IHasProgress {
         InteractLogicPlaceObjectOnCounterClientRpc();
     }
 
-    [ClientRpc()]
+    [ClientRpc]
     private void InteractLogicPlaceObjectOnCounterClientRpc() {
         cuttingProgress = 0;
 
