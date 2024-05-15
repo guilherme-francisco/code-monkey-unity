@@ -17,14 +17,11 @@ public class Player : NetworkBehaviour, IKitchenObjectParent {
     [SerializeField] private float moveSpeed = 7f;
     [SerializeField] private float rotateSpeed = 10f;
     [SerializeField] private float playeRadius = .7f;
-
     [SerializeField] private float playerHeight = 2f;
-
-
     [SerializeField] private LayerMask countersLayerMask;
-
+    [SerializeField] private LayerMask collisionLayerMask;
     [SerializeField] private Transform kitchenObjectHoldPoint;
-
+    [SerializeField] private List<Vector3> spawnPositionList;
     private bool isWalking;
 
     private Vector3 lastInteractDirection;
@@ -45,10 +42,10 @@ public class Player : NetworkBehaviour, IKitchenObjectParent {
 
     public override void OnNetworkSpawn()
     {
-        if(!IsOwner) {
-            return;
+        if(IsOwner) {
+            LocalInstance = this;
         }
-        LocalInstance = this;
+        transform.position = spawnPositionList[(int) OwnerClientId];
         OnAnyPlayerSpawned?.Invoke(this, EventArgs.Empty);
     }
 
@@ -127,21 +124,21 @@ public class Player : NetworkBehaviour, IKitchenObjectParent {
         
         float moveDistance = moveSpeed * Time.deltaTime;
 
-        bool canMove = moveDirection.x != 0 && !Physics.CapsuleCast(transform.position, transform.position + Vector3.up *playerHeight, playeRadius, moveDirection, moveDistance);
+        bool canMove = moveDirection.x != 0 && !Physics.BoxCast(transform.position, Vector3.one * playeRadius, moveDirection, Quaternion.identity, moveDistance, collisionLayerMask);
 
         if(!canMove) {
             // cannot nove towards moveDir
 
             // Attemp only x movement
             Vector3 moveDirectionX = new Vector3(moveDirection.x, 0, 0).normalized;
-            canMove = moveDirectionX.z != 0 && !Physics.CapsuleCast(transform.position, transform.position + Vector3.up *playerHeight, playeRadius, moveDirectionX, moveDistance);
+            canMove = moveDirectionX.z != 0 && !Physics.BoxCast(transform.position, Vector3.one * playeRadius, moveDirectionX, Quaternion.identity, moveDistance, collisionLayerMask);
             if(canMove) {
                 moveDirection = moveDirectionX;
             } else {
                 // cannot move only on the X
                 // Attemp only Z movement 
                 Vector3 moveDirectionZ = new Vector3(0, 0, moveDirection.z).normalized;
-                canMove = !Physics.CapsuleCast(transform.position, transform.position + Vector3.up *playerHeight, playeRadius, moveDirectionZ, moveDistance);
+                canMove = !Physics.BoxCast(transform.position, Vector3.one * playeRadius, moveDirectionZ, Quaternion.identity, moveDistance, collisionLayerMask);
                 if(canMove) {
                     // Can move only on the Z
                  moveDirection = moveDirectionZ;

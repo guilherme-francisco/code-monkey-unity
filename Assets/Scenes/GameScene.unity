@@ -16715,11 +16715,21 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 702896367684255557, guid: 43fb52abb82ee39449f2abb655b9b4f3,
+        type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 3257028550286133633, guid: 43fb52abb82ee39449f2abb655b9b4f3,
         type: 3}
       propertyPath: gameInput
       value: 
       objectReference: {fileID: 1695113261}
+    - target: {fileID: 3257028550286133633, guid: 43fb52abb82ee39449f2abb655b9b4f3,
+        type: 3}
+      propertyPath: collisionLayerMask.m_Bits
+      value: 72
+      objectReference: {fileID: 0}
     - target: {fileID: 4774205917370909190, guid: 43fb52abb82ee39449f2abb655b9b4f3,
         type: 3}
       propertyPath: m_LocalPosition.x

@@ -72,6 +72,7 @@ public class CuttingCounter : BaseCounter, IHasProgress {
         CutObjectClientRpc();
     }
 
+    [ClientRpc]
     private void CutObjectClientRpc(){
         cuttingProgress++;
 
