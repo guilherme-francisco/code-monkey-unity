@@ -1,9 +1,19 @@
 using TMPro;
 using UnityEngine;
 using System;
+using UnityEngine.UI;
+using Unity.Netcode;
 
 public class GameOverUI : MonoBehaviour {
     [SerializeField] private TextMeshProUGUI recipeDeliveredText;
+    [SerializeField] private Button playAgainButton;
+
+    private void Awake() {
+        playAgainButton.onClick.AddListener(() => {
+            NetworkManager.Singleton.Shutdown();
+            LoaderScene.Load(LoaderScene.Scene.MainMenuScene);
+        }); 
+    }
 
     private void Start() {
         GameManager.Instance.OnStateChanged += GameManager_OnStateChanged;

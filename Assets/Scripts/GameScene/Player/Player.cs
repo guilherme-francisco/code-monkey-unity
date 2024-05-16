@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
+using Unity.VisualScripting;
 
 public class Player : NetworkBehaviour, IKitchenObjectParent {
     public static Player LocalInstance { get; private set; }
@@ -47,6 +48,11 @@ public class Player : NetworkBehaviour, IKitchenObjectParent {
         }
         transform.position = spawnPositionList[(int) OwnerClientId];
         OnAnyPlayerSpawned?.Invoke(this, EventArgs.Empty);
+
+        
+        if (IsServer){
+            NetworkManager.Singleton.OnClientDisconnectCallback += NetworkManager_OnClientDisconnectCallback;
+        }
     }
 
     private void GameInput_OnInteractAlternateAction(object sender, EventArgs e) {
@@ -55,7 +61,13 @@ public class Player : NetworkBehaviour, IKitchenObjectParent {
         if(selectedCounter != null) {
             selectedCounter.InteractAlternate(this);
         }
-        
+    }
+
+    private void NetworkManager_OnClientDisconnectCallback(ulong clientId)
+    {
+        if (clientId == OwnerClientId && HasKitchenObject()) {
+            KitchenObject.DestroyKitchenObject(GetKitchenObject());
+        }
     }
 
     private void GameInput_OnInteractAction(object sender, EventArgs e) {
