@@ -7,11 +7,13 @@ public class GameManager : NetworkBehaviour {
     public static GameManager Instance { get; private set; }
 
     public event EventHandler OnStateChanged;
-    public event EventHandler OnGamePaused;
-    public event EventHandler OnGameUnpaused;
+    public event EventHandler OnLocalGamePaused;
+    public event EventHandler OnLocalGameUnpaused;
+    public event EventHandler OnMultiplayerGamePaused;
+    public event EventHandler OnMultiplayerGameUnpaused;
     public event EventHandler OnLocalPlayerReadyChanged;
 
-    private NetworkVariable<float> CountdownToStartTimer = new(3f);
+    private NetworkVariable<float> countdownToStartTimer = new(3f);
     private NetworkVariable<float> gamePlayingTimer = new(0f);
     [SerializeField] private float gamePlayingTimerMax;
 
@@ -25,15 +27,18 @@ public class GameManager : NetworkBehaviour {
 
     private NetworkVariable<State> state = new(State.WaitingToStart);
 
-    private bool isGamePaused = true;
-    private bool isLocalPlayerReady = true;
+    private bool isLocalGamePaused = false;
+    private NetworkVariable<bool> isGamePaused = new(false);
+    private bool isLocalPlayerReady;
 
     private Dictionary<ulong, bool> playerReadyDictionary;
+    private Dictionary<ulong, bool> playerPausedDictionary;
     
     private void Awake() {
         Instance = this;
 
         playerReadyDictionary = new Dictionary<ulong, bool>();
+        playerPausedDictionary = new Dictionary<ulong, bool>();
     }
 
     private void Start() {
@@ -44,6 +49,20 @@ public class GameManager : NetworkBehaviour {
     public override void OnNetworkSpawn()
     {
         state.OnValueChanged += State_OnValueChanged;
+        isGamePaused.OnValueChanged += IsGamePaused_OnValueChanged;
+    }
+
+    private void IsGamePaused_OnValueChanged(bool previousValue, bool newValue)
+    {
+        if (isGamePaused.Value) {
+            Time.timeScale = 0f;
+
+            OnMultiplayerGamePaused?.Invoke(this, EventArgs.Empty);
+        } else {
+            Time.timeScale = 1f;
+
+            OnMultiplayerGameUnpaused?.Invoke(this, EventArgs.Empty);
+        }
     }
 
     private void State_OnValueChanged(State previousValue, State newValue)
@@ -91,8 +110,8 @@ public class GameManager : NetworkBehaviour {
             case State.WaitingToStart:
                 break;
             case State.CountdownToStart:
-                CountdownToStartTimer.Value -= Time.deltaTime;
-                if (CountdownToStartTimer.Value < 0f) {
+                countdownToStartTimer.Value -= Time.deltaTime;
+                if (countdownToStartTimer.Value < 0f) {
                     state.Value = State.GamePlaying;
                     gamePlayingTimer.Value = gamePlayingTimerMax;
                 }
@@ -117,7 +136,7 @@ public class GameManager : NetworkBehaviour {
     }
 
     public float GetCountDownToStartTimer() {
-        return CountdownToStartTimer.Value;
+        return countdownToStartTimer.Value;
     }
 
     public bool IsGameOver() {
@@ -137,14 +156,45 @@ public class GameManager : NetworkBehaviour {
     }
 
     public void TogglePauseGame() {
-        isGamePaused = !isGamePaused;
-        if(isGamePaused) {
-            Time.timeScale = 0f;
-            OnGamePaused?.Invoke(this, EventArgs.Empty);
+        isLocalGamePaused = !isLocalGamePaused;
+        if(isLocalGamePaused) {
+            PauseGameServerRpc();
+            
+            OnLocalGamePaused?.Invoke(this, EventArgs.Empty);
         } else {
-            Time.timeScale = 1f;
-            OnGameUnpaused?.Invoke(this, EventArgs.Empty);
+            UnpauseGameServerRpc();
+            
+            OnLocalGameUnpaused?.Invoke(this, EventArgs.Empty);
         }
-        
     }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void PauseGameServerRpc(ServerRpcParams serverRpcParams = default) {
+        playerPausedDictionary[serverRpcParams.Receive.SenderClientId] = true;
+        
+        TestGamePausedState();
+    }	
+    [ServerRpc(RequireOwnership = false)]
+    private void UnpauseGameServerRpc(ServerRpcParams serverRpcParams = default) {
+        playerPausedDictionary[serverRpcParams.Receive.SenderClientId] = false;
+        
+        TestGamePausedState();
+    }	
+
+    private void TestGamePausedState() {
+        foreach (ulong clientId in NetworkManager.Singleton.ConnectedClientsIds) {
+            if (playerReadyDictionary.ContainsKey(clientId) && playerPausedDictionary[clientId]) {
+                // This player is paused
+                isGamePaused.Value = true;
+                return;
+            }
+        }
+        // All players are unpaused
+        isGamePaused.Value = false;
+    }
+
+    public bool IsLocalGamePaused () {
+        return isLocalGamePaused;
+    }
+    
 }
