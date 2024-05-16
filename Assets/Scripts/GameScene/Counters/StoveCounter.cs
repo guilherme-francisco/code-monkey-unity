@@ -21,7 +21,7 @@ public class StoveCounter : BaseCounter, IHasProgress {
 
     private NetworkVariable<State> state = new NetworkVariable<State>(State.Idle);
     private NetworkVariable<float> fryingTimer = new(0f);
-    private NetworkVariable<float> burningTimer;
+    private NetworkVariable<float> burningTimer = new(0f);
     private FryingRecipeSO fryingRecipeSO;
     private BurningRecipeSO burningRecipeSO;
 
