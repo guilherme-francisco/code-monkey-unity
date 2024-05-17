@@ -79,8 +79,14 @@ MonoBehaviour:
     m_Bits: 8
   collisionLayerMask:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 72
   kitchenObjectHoldPoint: {fileID: 3780940202842170374}
+  spawnPositionList:
+  - {x: 2, y: 0, z: 0}
+  - {x: -2, y: 0, z: 0}
+  - {x: 2, y: 0, z: 2}
+  - {x: -2, y: 0, z: 2}
+  playerVisual: {fileID: 41833762924619107}
 --- !u!114 &757596067791950072
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -336,6 +342,18 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 2982994795127084798}
   m_SourcePrefab: {fileID: 100100000, guid: 1c5dda3c7cd3cf742afcade5419faeab, type: 3}
+--- !u!114 &41833762924619107 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5961214387021560606, guid: 1c5dda3c7cd3cf742afcade5419faeab,
+    type: 3}
+  m_PrefabInstance: {fileID: 5921920644221722237}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9194017683803894362}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e2c1cd5b720d13541a10278555dd41d2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &9194017683803894361 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3294758251327466532, guid: 1c5dda3c7cd3cf742afcade5419faeab,
