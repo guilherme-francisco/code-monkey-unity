@@ -32,13 +32,15 @@ public class KitchenGameMultiplayer : NetworkBehaviour
         playerDataNetworkList.OnListChanged += PlayerDataNetworkList_OnListChanged;
     }
 
-    private void Start() {
+    private async void Start() {
         if (!playMultiplayer) {
             // Singleplayer
+            await KitchenGameLobby.Instance.CreateAllocation();
             StartHost();
             LoaderScene.LoadNetwork(LoaderScene.Scene.GameScene);
         }
     }
+
 
     public string GetPlayerName() {
         return playerName;
@@ -141,7 +143,7 @@ public class KitchenGameMultiplayer : NetworkBehaviour
         OnFailedToJoinGame?.Invoke(this, EventArgs.Empty);
     }
 
-    public void SpawnKitchenObject(KitchenObjectSO kitchenObjectSO, IKitchenObjectParent kitchenObjectParent) {      
+    public void SpawnKitchenObject(KitchenObjectSO kitchenObjectSO, IKitchenObjectParent kitchenObjectParent) {
         SpawnKitchenObjectServerRpc(GetKitchenObjectSOIndex(kitchenObjectSO), kitchenObjectParent.GetNetworkObject());
     }
     
@@ -177,7 +179,7 @@ public class KitchenGameMultiplayer : NetworkBehaviour
         return kitchenObjectListSO.kitchenObjectSOList[kitchenObjectSOIndex];
     } 
 
-    public void DestroyKitchenobject(KitchenObject kitchenObject) {
+    public void DestroyKitchenObject(KitchenObject kitchenObject) {
         DestroyKitchenObjectServerRpc(kitchenObject.NetworkObject);
     }
 

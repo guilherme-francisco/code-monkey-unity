@@ -17350,6 +17350,11 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 6
       objectReference: {fileID: 0}
+    - target: {fileID: 702896367684255557, guid: 43fb52abb82ee39449f2abb655b9b4f3,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3257028550286133633, guid: 43fb52abb82ee39449f2abb655b9b4f3,
         type: 3}
       propertyPath: gameInput

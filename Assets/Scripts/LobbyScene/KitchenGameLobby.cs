@@ -149,10 +149,12 @@ public class KitchenGameLobby : MonoBehaviour
                     IsPrivate = isPrivate
                 }
             );
-            Allocation allocation = await AllocateRelay();
-            string relayJoinCode = await GetRelayJoinCode(allocation);
 
-            string encryptionType = "dtls";
+            
+
+            Allocation allocation = await CreateAllocation();
+
+            string relayJoinCode = await GetRelayJoinCode(allocation);
 
             await LobbyService.Instance.UpdateLobbyAsync(joinedLobby.Id, new UpdateLobbyOptions
             {
@@ -165,18 +167,25 @@ public class KitchenGameLobby : MonoBehaviour
                 }
             });
 
-            NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(
-                new RelayServerData(
-                    allocation, encryptionType
-                )
-            );
-
             KitchenGameMultiplayer.Instance.StartHost();
             LoaderScene.LoadNetwork(LoaderScene.Scene.CharacterSelectScene);
         } catch (LobbyServiceException e) {
             Debug.Log(e);
             OnCreateLobbyFailed?.Invoke(this, EventArgs.Empty);
         }
+    }
+
+    public async Task<Allocation> CreateAllocation() {
+        Allocation allocation = await AllocateRelay();
+        string encryptionType = "dtls";
+
+        NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(
+            new RelayServerData(
+                allocation, encryptionType
+            )
+        );
+
+        return allocation;
     }
 
     public async void QuickJoin() {

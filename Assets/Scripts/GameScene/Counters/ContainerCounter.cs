@@ -10,9 +10,9 @@ public class ContainerCounter : BaseCounter {
     public override void Interact(Player player) {
         if(!player.HasKitchenObject()) {
             // Player is not carrying anything
-           KitchenObject.SpawnKitchenObject(kitchenObjectSO, player);
+            KitchenObject.SpawnKitchenObject(kitchenObjectSO, player);
 
-           InteractLogicServerRpc();
+            InteractLogicServerRpc();
         }
     }
 

@@ -28,10 +28,8 @@ public class KitchenObject : NetworkBehaviour {
     private void SetKitchenObjectParentClientRpc(NetworkObjectReference kitchenObjectParentNetworkObjectReference){
         kitchenObjectParentNetworkObjectReference.TryGet(out NetworkObject kitchenObjectParentNetworkObject);
         IKitchenObjectParent kitchenObjectParent = kitchenObjectParentNetworkObject.GetComponent<IKitchenObjectParent>();
-
-        if(this.kitchenObjectParent != null) {
-            this.kitchenObjectParent.ClearKitchenObject();
-        }
+ 
+        this.kitchenObjectParent?.ClearKitchenObject();
 
         this.kitchenObjectParent = kitchenObjectParent;
 
@@ -73,6 +71,6 @@ public class KitchenObject : NetworkBehaviour {
     }
 
     public static void DestroyKitchenObject(KitchenObject kitchenObject) {
-        KitchenGameMultiplayer.Instance.DestroyKitchenobject(kitchenObject);
+        KitchenGameMultiplayer.Instance.DestroyKitchenObject(kitchenObject);
     }
 }

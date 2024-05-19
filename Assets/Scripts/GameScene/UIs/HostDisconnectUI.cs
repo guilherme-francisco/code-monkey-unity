@@ -3,12 +3,22 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class HostDisconnectUI : MonoBehaviour
 {
     [SerializeField] private Button playAgainButton;
 
+    private void Awake() {
+        playAgainButton.onClick.AddListener(() => {
+            if(SceneManager.GetActiveScene().name == LoaderScene.Scene.LobbyScene.ToString()){
+                KitchenGameLobby.Instance.LeaveLobby();
+            }
+            NetworkManager.Singleton.Shutdown();
+            LoaderScene.Load(LoaderScene.Scene.MainMenuScene);
+        });
+    }
     private void Start() {
         NetworkManager.Singleton.OnClientDisconnectCallback += NetworkManager_OnClientDisconnectCallback;
 
