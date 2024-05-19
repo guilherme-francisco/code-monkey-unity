@@ -5,13 +5,20 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class MainMenuUI : MonoBehaviour {
-    [SerializeField] private Button playButton;
+    [SerializeField] private Button playMultiplayerButton;
+    [SerializeField] private Button playSingleplayerButton;
     [SerializeField] private Button quitButton;
 
 
     private void Awake() {
-        playButton.onClick.AddListener(() => {
-            LoaderScene.Load(LoaderScene.Scene.GameScene);
+        playMultiplayerButton.onClick.AddListener(() => {
+            KitchenGameMultiplayer.SetPlayMultiplayer(true);
+            LoaderScene.Load(LoaderScene.Scene.LobbyScene);
+        });
+
+        playSingleplayerButton.onClick.AddListener(() => {
+            KitchenGameMultiplayer.SetPlayMultiplayer(false);
+            LoaderScene.Load(LoaderScene.Scene.LobbyScene);
         });
 
         quitButton.onClick.AddListener(() => {

@@ -18,14 +18,14 @@ public class ClearCounter : BaseCounter {
                 // Player is carrying something
                 if(player.GetKitchenObject().TryGetPlate(out PlateKitchenObject plateKitchenObject)) {
                     if(plateKitchenObject.TryAddIngredient(GetKitchenObject().GetKitchenObjectSO())) {
-                        GetKitchenObject().DestroySelf();
+                        KitchenObject.DestroyKitchenObject(GetKitchenObject());
                     }
 
                 } else {
                     // Player is not carrying plate but something else
                     if(GetKitchenObject().TryGetPlate(out plateKitchenObject)) {
                         if(plateKitchenObject.TryAddIngredient(player.GetKitchenObject().GetKitchenObjectSO())) {
-                            player.GetKitchenObject().DestroySelf();
+                            KitchenObject.DestroyKitchenObject(player.GetKitchenObject());
                         }
                     }
                 }
